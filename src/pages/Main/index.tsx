@@ -3,8 +3,8 @@ import { Button, Card, CardFooter, Image } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 
 // Images
-import Portada from "@/assets/portada.jpg";
-import Logo from "@/assets/logo.png";
+import Portada from "@/common/assets/portada.jpg";
+import Logo from "@/common/assets/logo.png";
 
 const MainPage = () => {
   const navigate = useNavigate();
