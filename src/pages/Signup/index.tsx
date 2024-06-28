@@ -9,6 +9,7 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { parseDate } from "@internationalized/date";
 
 // Common
 import {
@@ -42,9 +43,30 @@ import {
   faVenusMars,
 } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
-import { createRef } from "react";
+import { createRef, useState } from "react";
+import db from "../../firebase_config";
+import { doc, setDoc } from "firebase/firestore";
 
 const SignUpPage = () => {
+  const participant = {
+    name: "",
+    lastname: "",
+    document_type: "",
+    document_number: "",
+    whatsapp_number: "",
+    birthdate: "",
+    sex: "",
+    city: "",
+    eps: "",
+    rh: "",
+    modality: "",
+    category: "",
+    size: "",
+  };
+
+  // Variables
+  const [data, setData] = useState(participant);
+
   // Create a reference to the hidden file input element
   const hiddenFileInput = createRef<HTMLInputElement>();
 
@@ -52,9 +74,10 @@ const SignUpPage = () => {
     hiddenFileInput.current?.click();
   };
 
-  const handleChange = (event: any) => {
-    event.target.files[0];
+  const pushData = async () => {
+    await setDoc(doc(db, "participants", data.name), { ...data });
   };
+
   return (
     <>
       <section className="flex justify-center items-center min-h-screen">
@@ -75,6 +98,8 @@ const SignUpPage = () => {
                 }
                 placeholder="Nombres"
                 label="Nombre"
+                value={data.name}
+                onValueChange={(value) => setData({ ...data, name: value })}
               />
               <MainInput
                 endContent={
@@ -82,6 +107,8 @@ const SignUpPage = () => {
                 }
                 placeholder="Apellidos"
                 label="Apellidos"
+                value={data.lastname}
+                onValueChange={(value) => setData({ ...data, lastname: value })}
               />
             </div>
             <div className="flex gap-2">
@@ -110,6 +137,10 @@ const SignUpPage = () => {
                 }
                 placeholder="# Documento"
                 label="No. de documento"
+                value={data.document_number}
+                onValueChange={(value) =>
+                  setData({ ...data, document_number: value })
+                }
               />
               <MainInput
                 endContent={
@@ -120,14 +151,26 @@ const SignUpPage = () => {
                 }
                 placeholder="# Whatsapp"
                 label="Whatsapp"
+                value={data.whatsapp_number}
+                onValueChange={(value) =>
+                  setData({ ...data, whatsapp_number: value })
+                }
               />
             </div>
             <div className="flex gap-2">
-              <DateInput label="Fecha de nacimiento" />
+              <DateInput
+                label="Fecha de nacimiento"
+                value={parseDate("2024-05-05")}
+                onChange={(value) =>
+                  setData({ ...data, birthdate: value.toString() })
+                }
+              />
               <MainSelect
                 label="Sexo"
                 placeholder="Sexo"
                 data={sex}
+                value={data.sex}
+                onChange={(e) => setData({ ...data, sex: e.target.value })}
                 startContent={
                   <FontAwesomeIcon
                     icon={faVenusMars}
@@ -146,6 +189,8 @@ const SignUpPage = () => {
                 }
                 placeholder="Ciudad"
                 label="Ciudad de procedencia"
+                value={data.city}
+                onValueChange={(value) => setData({ ...data, city: value })}
               />
               <MainInput
                 endContent={
@@ -156,6 +201,8 @@ const SignUpPage = () => {
                 }
                 placeholder="Eps"
                 label="Eps"
+                value={data.eps}
+                onValueChange={(value) => setData({ ...data, eps: value })}
               />
             </div>
             <div className="flex gap-2">
@@ -163,6 +210,8 @@ const SignUpPage = () => {
                 label="RH"
                 placeholder="RH"
                 data={rh}
+                value={data.rh}
+                onChange={(e) => setData({ ...data, rh: e.target.value })}
                 startContent={
                   <FontAwesomeIcon
                     icon={faDroplet}
@@ -174,6 +223,8 @@ const SignUpPage = () => {
                 label="Modalidad"
                 placeholder="Modalidad"
                 data={modality_types}
+                value={data.modality}
+                onChange={(e) => setData({ ...data, modality: e.target.value })}
                 startContent={
                   <FontAwesomeIcon
                     icon={faRoute}
@@ -187,6 +238,8 @@ const SignUpPage = () => {
                 label="Categoría"
                 placeholder="Categoría"
                 data={categories}
+                value={data.category}
+                onChange={(e) => setData({ ...data, category: e.target.value })}
                 startContent={
                   <FontAwesomeIcon
                     icon={faBicycle}
@@ -198,6 +251,8 @@ const SignUpPage = () => {
                 label="Talla"
                 placeholder="Talla"
                 data={sizes}
+                value={data.size}
+                onChange={(e) => setData({ ...data, size: e.target.value })}
                 startContent={
                   <FontAwesomeIcon
                     icon={faShirt}
@@ -209,7 +264,7 @@ const SignUpPage = () => {
             <Spacer />
             <div className="">
               <Button
-                className="w-full"
+                className=""
                 variant="bordered"
                 onClick={handleClick}
                 startContent={
@@ -224,8 +279,7 @@ const SignUpPage = () => {
               <MainInput
                 className="hidden"
                 type="file"
-                ref={hiddenFileInput}
-                onChange={handleChange}
+                reference={hiddenFileInput}
                 endContent={
                   <FontAwesomeIcon
                     icon={faHeartPulse}
@@ -238,8 +292,8 @@ const SignUpPage = () => {
             </div>
           </CardBody>
           <CardFooter className="flex justify-end">
-            <Button color="success" variant="flat">
-              Inscribirse
+            <Button color="success" variant="flat" onClick={pushData}>
+              Inscribirme
             </Button>
           </CardFooter>
         </Card>

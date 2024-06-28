@@ -10,24 +10,29 @@ type MainInputProps = {
   type?: string | undefined;
   label?: string | undefined;
   className?: string | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
+  reference?: React.RefObject<HTMLInputElement> | undefined;
+  value?: string | undefined;
   onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
 };
 
 const MainInput = (props: MainInputProps) => {
   return (
     <Input
+      isRequired
       className={props.className}
       autoFocus={props.autofocus}
       startContent={props.startContent}
       endContent={props.endContent}
       placeholder={props.placeholder}
       onChange={props.onChange}
-      ref={props.ref}
+      ref={props.reference}
       label={props.label}
       type={props.type}
       labelPlacement="outside"
       variant="bordered"
+      value={props.value}
+      onValueChange={props.onValueChange}
     />
   );
 };
